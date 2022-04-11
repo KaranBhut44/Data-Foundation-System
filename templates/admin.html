@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Admin</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <link rel="stylesheet" href="{% static 'homecss/style.css' %}" />
+  </head>
+  <body>
+    <section class="ftco-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5">
+            <h2 class="heading-section">Requests Information</h2>
+          </div>
+          <div class="col-md-2 text-right mb-5">
+            <a href="home"><h2 class="btn btn-secondary">Home page</h2></a>
+          </div>
+          <div class="col-md-2 text-right mb-5">
+            <a href="logout"><h2 class="btn btn-secondary">Logout</h2></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-wrap">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="table09-head">
+                    <th>Dataset Name</th>
+                    <th>Consumer Name</th>
+                    <th>Action1</th>
+                    <th>Action2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for req in requests %}
+                  <tr>
+                    <td>{{ req.dname }}</td>
+                    <td>{{ req.cname }}</td>
+                    <td>
+                      <a
+                        href="acceptReq/{{ forloop.counter }}"
+                        class="btn btn-success"
+                        ><u>ACCEPT</u></a
+                      >
+                    </td>
+                    <td>
+                      <a
+                        href="rejectReq/{{ forloop.counter }}"
+                        class="btn btn-danger"
+                        ><u>REJECT</u></a
+                      >
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="{% static 'homejs/jquery.min.js' %}"></script>
+    <script src="{% static 'homejs/popper.js' %}"></script>
+    <script src="{% static 'homejs/bootstrap.min.js' %}"></script>
+    <script src="{% static 'homejs/main.js' %}"></script>
+  </body>
+</html>
