@@ -14,7 +14,7 @@
       rel="stylesheet"
       type="text/css"
     />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -85,7 +85,7 @@
                     {% else %}
                     <td>
                       <a
-                        href="requestDataset/{{ forloop.counter }}"
+                        href="/requestDataset/{{ forloop.counter }}"
                         style="color: blue"
                         ><u>REQUEST</u></a
                       >
@@ -95,7 +95,58 @@
                   </tr>
                   {% endfor %}
                 </tbody>
-              </table>
+                <button id="trbutton" data-toggle="modal" data-target="#exampleModalCenter" hidden>
+                </button>
+              {% if UA != "" %}
+  
+              <script type="text/javascript">
+                $(document).ready(function(){
+                  document.getElementById("trbutton").click();
+                });
+                </script>
+                {% endif %}
+              <div
+                class="modal fade"
+                id="exampleModalCenter"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true"
+                href="/requestDataset/{{ forloop.counter }}"
+              >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">
+                        Confirmation
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      {{ UA }} <br>
+                      Are you sure?
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        
+                      >
+                        NO
+                      </button>
+                      <a style="color: white;text-decoration:none" href="/send_req/{{ Id }}"><button type="button" class="btn btn-primary">YES</button></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

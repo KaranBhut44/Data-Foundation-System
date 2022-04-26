@@ -15,6 +15,7 @@ urlpatterns = [
     path('registration', views.registration, name='registration'),
     path('validate', views.validate, name='validate'),
     path('validateRegistration', views.validateRegistration, name='validateRegistration'),
+    path('send_req/<int:id>',views.send_req,name='send_req'),
     path('login', views.login, name='login'),
     path('logout',views.logout,name='logout')
 ]

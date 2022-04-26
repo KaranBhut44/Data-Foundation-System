@@ -4,13 +4,6 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .models import Approved_req, Dataset_info, Pending_req, Rejected_req, user_details
 
-# dataset1link = "https://docs.google.com/spreadsheets/d/1c4TeZFFueJHsedVSSyIKA2-tHSMut6jE/edit?usp=sharing&ouid=103453030291973279123&rtpof=true&sd=true"
-# dataset1link = "https://docs.google.com/spreadsheets/d/1l_mVbz3LiFocOTNvVrUWFXTl_YjEYntIJCTRLRkm2U8/edit?usp=sharing"
-# dataset2link = "https://docs.google.com/spreadsheets/d/12uEkgD-hdvibspl6_S7BLimq-LiElwmV/edit?usp=sharing&ouid=103453030291973279123&rtpof=true&sd=true"
-# dataset3link = "https://docs.google.com/spreadsheets/d/1M8Vhi5_NFpeXwM1QyC8c40J9tz4vuWSy/edit?usp=sharing&ouid=103453030291973279123&rtpof=true&sd=true"
-# dataset4link = "https://docs.google.com/spreadsheets/d/1aYIbMnWsDMnMYJ-c-gbTl9EFtCotRt6A/edit?usp=sharing&ouid=103453030291973279123&rtpof=true&sd=true"
-# datasets_links = [dataset1link,dataset2link,dataset3link,dataset4link]
-
 user_data = []
 admin_result = []
 own_datasets =[]
@@ -102,7 +95,7 @@ def load_data():
     datasets_info_list = Dataset_info.objects.all()
 
     for item in datasets_info_list:
-        datasets_info[item.dname] = [item.author,item.date_time,item.link]
+        datasets_info[item.dname] = [item.author,item.date_time,item.link,item.access_type,item.need_UA,item.UA]
 
     pending,approved,rejected = [],[],[]
 
@@ -129,7 +122,7 @@ def home(request):
         return redirect(login)
     load_data()
     global user_data
-    return render(request, "home.html", {'datasets': user_data})
+    return render(request, "home.html", {'datasets': user_data, 'UA': ""})
 
 def download(req,id):
     id -= 1
@@ -148,6 +141,16 @@ def cancelReq(req,id):
 
 def requestDataset(req,id):
     id -= 1
+    global username
+    global user_data
+    global datasets_info
+    access_type = datasets_info[user_data[id].field1][4]
+    UA_description = datasets_info[user_data[id].field1][5]
+    if(access_type == "yes"):
+        return render(req, "home.html", {'datasets': user_data ,'UA':UA_description,'Id':id})
+    return redirect(send_req,id)
+
+def send_req(req,id):
     global username
     global user_data
     newRow = Pending_req(dname=user_data[id].field1, cname=username)
