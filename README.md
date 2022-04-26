@@ -41,3 +41,19 @@
 #### -> User authentication service
  - This project will be used to register/login different dataset users and dataset owners of our project.
 
+# 5. Steps to run the project
+
+ - Execute this command: `python manage.py runserver`
+ - Open this URL in Any browser: `127.0.0.1:8000`
+
+# 6. Project Code structure:
+For Django project, Project name is 'mysite' and Application name is 'dfs'.
+ - `mysite/settings.py`: configured for MySQL.
+ - `dfs/models.py`: Contains Models for different MySQL tables.
+ - `dfs/urls.py`: Contains routes information.
+ - `dfs/views.py`: It is the main python file for handling backend.
+ - `static`: It contains static files like js,css and images for the UI.
+ - `templates/admin.html`: Dataset publisher page
+ - `templates/home.html`: Dataset consumer page
+ - `templates/login.html`: Login page
+ - `templates/registration.html`: Registration page
