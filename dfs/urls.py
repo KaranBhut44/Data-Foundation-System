@@ -16,6 +16,11 @@ urlpatterns = [
     path('validate', views.validate, name='validate'),
     path('validateRegistration', views.validateRegistration, name='validateRegistration'),
     path('send_req/<int:id>',views.send_req,name='send_req'),
+    path('viewConsumers/<int:id>', views.viewConsumers, name='viewConsumers'),
+    path('viewRequests/<int:id>', views.viewRequests, name='viewRequests'),
+    path('revokeAccess/<int:id>', views.revokeAccess, name='revokeAccess'),
+    path('performChanges', views.performChanges, name='performChanges'),
+    path('modify/<int:id>', views.modify, name='modify'),
     path('login', views.login, name='login'),
     path('logout',views.logout,name='logout')
 ]

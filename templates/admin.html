@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Admin</title>
+    <title>Home</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -14,7 +14,7 @@
       rel="stylesheet"
       type="text/css"
     />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -22,12 +22,13 @@
 
     <link rel="stylesheet" href="{% static 'homecss/style.css' %}" />
   </head>
+
   <body>
     <section class="ftco-section">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6 text-center mb-5">
-            <h2 class="heading-section">Requests Information</h2>
+            <h2 class="heading-section">Datasets Information</h2>
           </div>
           <div class="col-md-2 text-right mb-5">
             <a href="home"><h2 class="btn btn-secondary">Home page</h2></a>
@@ -36,6 +37,7 @@
             <a href="logout"><h2 class="btn btn-secondary">Logout</h2></a>
           </div>
         </div>
+
         <div class="row">
           <div class="col-md-12">
             <div class="table-wrap">
@@ -43,33 +45,139 @@
                 <thead>
                   <tr class="table09-head">
                     <th>Dataset Name</th>
-                    <th>Consumer Name</th>
-                    <th>Action1</th>
-                    <th>Action2</th>
+                    <th>Date & Time</th>
+                    <th>Access</th>
+                    <th>User Agreement Needed?</th>
+                    <th>Settings</th>
+                    <th>Access requests</th>
+                    <th>Dataset consumers</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for req in requests %}
+                  {% for dataset in requests %}
                   <tr>
-                    <td>{{ req.dname }}</td>
-                    <td>{{ req.cname }}</td>
+                    <td>{{ dataset.dname }}</td>
+                    <td>{{ dataset.date }}</td>
                     <td>
-                      <a
-                        href="acceptReq/{{ forloop.counter }}"
-                        class="btn btn-success"
-                        ><u>ACCEPT</u></a
-                      >
+                      {% if dataset.access == "public" %}
+                      <div class="btn btn-warning">Public</div>
+                      {% else %}
+                      <div class="btn btn-success">Private</div>
+                      {% endif %}
                     </td>
                     <td>
-                      <a
-                        href="rejectReq/{{ forloop.counter }}"
-                        class="btn btn-danger"
-                        ><u>REJECT</u></a
-                      >
+                      {% if dataset.UA == "yes" %}
+                      <div class="btn btn-success">YES</div>
+                      {% else %}
+                      <div class="btn btn-warning">NO</div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a href="/modify/{{ forloop.counter }}">Modify</a>
+                    </td>
+                    <td>
+                      <a href="/viewRequests/{{ forloop.counter }}">View</a>
+                    </td>
+                    <td>
+                      <a href="/viewConsumers/{{ forloop.counter }}">View</a>
                     </td>
                   </tr>
                   {% endfor %}
                 </tbody>
+                <button
+                  id="trbutton"
+                  hidden
+                  data-toggle="modal"
+                  data-target="#exampleModalCenter"
+                ></button>
+                {% if modified == "yes" %}
+                <script type="text/javascript">
+                  $(document).ready(function () {
+                    document.getElementById("trbutton").click()
+                  })
+                </script>
+                {% endif %}
+                <div
+                  class="modal fade"
+                  id="exampleModalCenter"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalCenterTitle"
+                  aria-hidden="true"
+                  href="/requestDataset/{{ forloop.counter }}"
+                >
+                  <div
+                    class="modal-dialog modal-dialog-centered"
+                    role="document"
+                  >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                          Modify Configurations of {{ current_dataset }}
+                        </h5>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form
+                          class="px-4"
+                          action="/performChanges"
+                          method="post"
+                          id="settings"
+                        >
+                          {% csrf_token %}
+                          <strong>Access Type:</strong> &nbsp; &nbsp; &nbsp;
+                          <input
+                            type="radio"
+                            name="access"
+                            id="private"
+                            value="private"
+                          />&nbsp; Private &nbsp; &nbsp;
+                          <input
+                            type="radio"
+                            name="access"
+                            id="public"
+                            value="public"
+                          />&nbsp; Public
+                          <br />
+                          <strong>Is User Agreement needed?</strong> &nbsp;
+                          &nbsp; &nbsp;
+                          <input
+                            type="radio"
+                            name="need"
+                            id="yes"
+                            value="yes"
+                          />&nbsp; Yes &nbsp; &nbsp;
+                          <input
+                            type="radio"
+                            name="need"
+                            id="no"
+                            value="no"
+                          />&nbsp; No
+                          <br />
+                          <strong>User Agreement:</strong>
+
+                          <div class="form-outline mb-4">
+                            <textarea
+                              form="settings"
+                              class="form-control"
+                              id="form4Example3"
+                              rows="4"
+                              name="UA"
+                            ></textarea>
+                          </div>
+                          <input type="submit" value="SAVE" />
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </table>
             </div>
           </div>

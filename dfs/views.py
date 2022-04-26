@@ -9,6 +9,7 @@ admin_result = []
 own_datasets =[]
 datasets_info = dict()
 username = ""
+current_dataset = ""
 
 class MyStruct():
     def __init__(self, field1, field2, field3):
@@ -17,9 +18,11 @@ class MyStruct():
         self.field3 = field3
 
 class AdminData():
-    def __init__(self, field1, field2):
+    def __init__(self, field1, field2,field3,field4):
         self.dname = field1
-        self.cname = field2
+        self.date = field2
+        self.access = field3
+        self.UA = field4
 
 def validate(req):
     name = req.POST['name']
@@ -99,6 +102,10 @@ def load_data():
 
     pending,approved,rejected = [],[],[]
 
+    for item in datasets_info_list:
+        if item.access_type == "public":
+            approved.append([item.dname,"Approved"])
+    
     for req in allpending:
         if req.cname == username:
             pending.append([req.dname,"Pending"])
@@ -163,33 +170,101 @@ def load_admin_info(admin):
     own_datasets = []
     for dataset in all_datasets:
         if(dataset.author == admin):
-            own_datasets.append(dataset.dname)
-
-    allpending = Pending_req.objects.all()
-    global admin_result
-    admin_result = []
-    for req in allpending:
-        if req.dname in own_datasets:
-            obj1 = AdminData(req.dname,req.cname)
-            admin_result.append(obj1)
+            own_datasets.append(AdminData(dataset.dname,dataset.date_time,dataset.access_type,dataset.need_UA))
 
 def adminPanel(req):
     global username
     load_admin_info(username)
-    return render(req,"admin.html",{"requests":admin_result})
+    global own_datasets
+    return render(req,"admin.html",{"requests":own_datasets})
 
 def acceptReq(req,id):
     id -= 1
-    newRow = Approved_req(dname=admin_result[id].dname, cname=admin_result[id].cname)
+    global current_dataset
+    global consumers
+
+    newRow = Approved_req(dname=current_dataset, cname=consumers[id])
     newRow.save()
-    oldRow = Pending_req.objects.get(dname = admin_result[id].dname)
+    oldRow = Pending_req.objects.get(dname=current_dataset, cname=consumers[id])
     oldRow.delete()
     return redirect(adminPanel)
 
 def rejectReq(req,id):
     id -= 1
-    newRow = Rejected_req(dname=admin_result[id].dname, cname=admin_result[id].cname)
+    global current_dataset
+    global consumers
+    
+    newRow = Rejected_req(dname=current_dataset, cname=consumers[id])
     newRow.save()
-    oldRow = Pending_req.objects.get(dname = admin_result[id].dname)
+    oldRow = Pending_req.objects.get(dname=current_dataset, cname=consumers[id])
     oldRow.delete()
     return redirect(adminPanel)
+
+
+def viewConsumers(requ,id):
+    id -= 1
+    global own_datasets
+    global consumers
+    global current_dataset
+
+    current_dataset = own_datasets[id].dname
+    allAccepted = Approved_req.objects.all()
+
+    consumers = [] 
+    for req in allAccepted:
+        if req.dname == current_dataset:
+            consumers.append(req.cname)
+
+    return render(requ,"consumers.html",{"consumers":consumers})
+
+def performChanges(req):
+    access = req.POST['access']
+    UA_needed = req.POST['need']
+    UA = req.POST['UA']
+
+    global current_dataset
+
+    newRow = Dataset_info.objects.get(dname=current_dataset)
+    newRow.access_type = access
+    newRow.need_UA = UA_needed
+    newRow.UA = UA
+    newRow.save()
+    load_admin_info(username)
+    return redirect(adminPanel)
+
+def modify(req,id):
+    id -= 1
+    global current_dataset
+    global own_datasets
+    current_dataset = own_datasets[id].dname
+    
+
+    return render(req,"admin.html",{"modified":"yes","current_dataset":current_dataset,"requests":own_datasets})
+
+def viewRequests(requ,id):
+    id -= 1
+    global own_datasets
+    global consumers
+    global current_dataset
+
+    current_dataset = own_datasets[id].dname
+    print("current dataset", current_dataset)
+
+    allpending = Pending_req.objects.all()
+
+    consumers = [] 
+    for req in allpending:
+        if req.dname == current_dataset:
+            consumers.append(req.cname)
+
+    return render(requ,"requestList.html",{"consumers":consumers})
+
+def revokeAccess(req,id):
+    id -= 1
+    global consumers
+    global current_dataset
+
+    newRow = Rejected_req(dname=current_dataset, cname=consumers[id])
+    newRow.save()
+    oldRow = Approved_req.objects.get(dname = admin_result[id].dname, cname=consumers[id])
+    oldRow.delete()
