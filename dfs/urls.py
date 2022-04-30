@@ -21,6 +21,7 @@ urlpatterns = [
     path('revokeAccess/<int:id>', views.revokeAccess, name='revokeAccess'),
     path('performChanges', views.performChanges, name='performChanges'),
     path('modify/<int:id>', views.modify, name='modify'),
+    path('consumer_has_access/<str:dname>/<str:cname>',views.consumer_has_access, name='consumer_has_access'),
     path('login', views.login, name='login'),
     path('logout',views.logout,name='logout')
 ]

@@ -1,4 +1,5 @@
-from http.client import HTTPResponse
+from django.http import HttpResponse
+from operator import truediv
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
@@ -268,3 +269,10 @@ def revokeAccess(req,id):
     newRow.save()
     oldRow = Approved_req.objects.get(dname = admin_result[id].dname, cname=consumers[id])
     oldRow.delete()
+
+def consumer_has_access(req,dname,cname):
+    req_list = Approved_req.objects.all()
+    for req in req_list:
+        if(req.dname == dname and req.cname == cname):
+            return HttpResponse("yes")
+    return HttpResponse("no")
