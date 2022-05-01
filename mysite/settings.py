@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4%^dtynnj(it!fn%kb5gdt+k55utl93fl*450!%8-y-$pj8h=f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.1.38.18"]
+ALLOWED_HOSTS = ["10.1.38.18","127.0.0.1","localhost"]
 
 
 # Application definition
@@ -78,16 +78,13 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DFSDB',
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'DFSproject',
-        'USER': 'root',
-        'PASSWORD':'1234',
-        'HOST':'127.0.0.1',
-        'PORT' : '3306'
+        'NAME': "dfsdb",
+        'USER': "root",
+        'PASSWORD': "1234",
+        'HOST': "104.154.91.7",
+        'PORT': 3306,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
