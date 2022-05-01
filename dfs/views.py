@@ -1,5 +1,4 @@
 from django.http import HttpResponse
-from operator import truediv
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
